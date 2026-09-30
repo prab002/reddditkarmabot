@@ -35,6 +35,44 @@ answers are good. That's enough to clear most filters. Traffic comes from the
 occasional well-placed link in a thread where it truly answers the question.
 Those links keep sending visitors for months through search.
 
+## Profile link: traffic without promo comments
+
+Set this up on day 1. It's the biggest traffic source that costs no promo budget.
+
+1. **Bio**: one line with the link, e.g. "I make free Mac utilities → free-mac.online".
+2. **Pinned profile post**: a short, honest "what I build and why" post with links to
+   each site. Pin it to your profile (not to a subreddit).
+3. Then write replies that answer everything with **no link**. People who find an
+   answer useful click your username, see the bio, and visit. Every good answer
+   works as an ad, and none of them count against the 9:1 ratio.
+
+## Google: making threads and answers rank
+
+Reddit threads rank very well on Google (often in the top 3 and in "Discussions and
+forums"), so a good answer can bring visitors for months. Reddit links are `nofollow`,
+so they don't pass SEO authority to your site. The value is the **referral traffic from
+the thread itself** ranking. To help an answer get found and chosen:
+
+- **Use the words people search.** Name the problem the way a searcher types it:
+  "System Data taking up space", "Mac storage full", "what is taking up space on my Mac",
+  plus the macOS version (Sequoia, Sonoma) and model (MacBook Air M2) when known.
+  Work them in naturally once or twice. Never stuff keywords.
+- **Answer in the first two lines.** Google snippets and skimming readers both take
+  the opening. Put the key fact or the command there.
+- **Make it self-contained and step-by-step.** Numbered steps, exact commands in
+  `code`, exact settings paths. Complete answers get upvoted to the top, and
+  top comments are what Google shows.
+- **Explain the "why" in one sentence.** For example: "the Storage screen lumps
+  caches, snapshots and logs into System Data and doesn't break it down."
+  People searching usually want to understand, not just fix.
+- **Post early in the thread's life.** The first good answer tends to stay on top.
+- **For launch posts:** the title is the page title Google indexes. Make it
+  descriptive ("Free Mac tool to see what's taking up storage (System Data included)"),
+  not clever.
+- **Your own site ranks separately.** Linking a specific guide page that exactly matches
+  the thread's question sends better-qualified visitors than the homepage, and those
+  visits and engagement help your site more than the link itself.
+
 ## Self-promotion rules of thumb
 
 - **9:1**: nine helpful contributions for each one that promotes your stuff.

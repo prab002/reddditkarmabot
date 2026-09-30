@@ -40,13 +40,34 @@ who has been through the problem.
 
 ## Disclosure that still sounds human
 
-When the user's own site or app comes up, say so the way a person would:
+Disclosure is required, but it doesn't have to sound like a legal notice.
+The most natural version is a short origin story: you hit the problem, so you
+built something. Readers see that as a maker sharing, not as an ad.
+
+Casual (prefer these):
+
+- "I got fed up with this on my own Mac and made a small free tool for it: <link>"
+- "(<link>, a side project of mine, does this visually)"
+- "I ended up building a little free thing for exactly this after fighting it myself: <link>"
+- "I wrote up the whole process with screenshots here, it's my site: <link>"
+
+More explicit (good for skeptical subs, or when someone asks directly):
 
 - "Full disclosure, I built this, so I'm biased, but it's free and does exactly this: <link>"
-- "I wrote up the whole process with screenshots here (my site): <link>"
 - "(I'm the dev, happy to take feedback, especially the harsh kind)"
 
-Put it right next to the link, never at the end of a long reply where it's easy to miss.
+Rules for all of them:
+
+- The ownership words ("I made", "my site", "side project of mine") sit right
+  next to the link, never tucked at the end of a long reply.
+- Only use an origin story the user actually gave you ("fed up with this on my
+  own Mac" must be true). Otherwise use a plain version like "(my site)".
+- **Never write the user's own site as if they just came across it** ("I found
+  this tool", "someone recommended X"). That's astroturfing. Reddit bans domains
+  for it, and it misleads the people you're trying to help. If the user asks
+  for that, write the casual disclosed version and explain why.
+- Naming a free alternative next to your own ("GrandPerspective works too")
+  makes the recommendation believable. Do it when a good one exists.
 
 ## Before and after
 
