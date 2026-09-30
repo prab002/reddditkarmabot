@@ -76,4 +76,4 @@ If it's over **40GB**, you're probably not out of space.
 
 **You're out of visibility.**
 
-What's your System Data number right now? Reply and tell me. I want to know how many people are sitting at 100GB+ like I was.
+What's your System Data number right now? Reply and tell me. I want to know how many people are sitting at 100GB+ like me.
