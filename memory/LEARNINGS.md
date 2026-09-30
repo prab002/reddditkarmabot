@@ -16,6 +16,7 @@ of each section. Commit and push after each session so the next session picks it
 - 2026-09-30: Posting rhythm: 3 own posts per week per platform; most effort goes into comments (targets: Reddit 5, X 10, Threads 5 a day)
 - 2026-09-30: X account upgraded to Premium (2026-09-30): long posts allowed and replies rank higher; still keep links in a self-reply
 - 2026-09-30: User's own Mac (real, 2026-09-30 screenshot): 245GB disk, 236.89GB used, System Data 130.33GB (53%), macOS 39.27GB, Documents 48GB, Apps 16.9GB. Use as the true origin story in content.
+- 2026-09-30: Angle that the user liked: 'My Mac Is Full. Apple's Solution? Pay for iCloud.' (villain = Storage screen's iCloud upsell; line: 'You're not out of space. You're out of visibility.'). Generic how-to lists felt boring to the user.
 
 ## Subreddits
 
