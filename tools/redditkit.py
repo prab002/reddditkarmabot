@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""redditkit: a read-only Reddit helper for the reddit-assistant skill.
+"""redditkit: a read-only helper for the social-assistant skill (Reddit, X, Threads).
 
 It finds threads, reads subreddit rules, builds prompts for any AI, and keeps
 a local log of your helpful vs. promotional activity. It never logs in, posts,
@@ -22,14 +22,15 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILL_DIR = ROOT / "skill" / "reddit-assistant"
+SKILL_DIR = ROOT / "skill" / "social-assistant"
 DEFAULT_CONFIG = ROOT / "sites.toml"
 DEFAULT_LOG = ROOT / "data" / "activity.jsonl"
 DEFAULT_MEMORY = ROOT / "memory" / "LEARNINGS.md"
 MEMORY_SECTIONS = {"pref": "Preferences", "sub": "Subreddits", "worked": "What worked",
                    "didnt": "What didn't", "env": "Environment"}
 USER_AGENT = "redditkit/0.1 (read-only helper; personal use)"
-TASKS = ("reply", "post", "mod-message", "pick-subs", "review")
+TASKS = ("reply", "post", "thread", "repurpose", "mod-message", "pick-subs", "review")
+PLATFORMS = ("reddit", "x", "threads")
 PROMO_RATIO = 9  # helpful actions per promotional one
 
 
@@ -211,9 +212,12 @@ def format_ratio(r: dict, site: str | None) -> str:
 
 # ---------------------------------------------------------------- prompt ---
 
-def read_skill(memory: Path | None = DEFAULT_MEMORY) -> str:
+def read_skill(memory: Path | None = DEFAULT_MEMORY, platform: str = "reddit") -> str:
     parts = [(SKILL_DIR / "SKILL.md").read_text()]
-    for name in ("voice.md", "playbook.md", "templates.md"):
+    names = ["voice.md", "playbook.md", "templates.md"]
+    if platform != "reddit":
+        names.append(f"platforms/{platform}.md")
+    for name in names:
         p = SKILL_DIR / "references" / name
         parts.append(f"\n\n===== references/{name} =====\n\n{p.read_text()}")
     if memory and memory.exists():
@@ -258,11 +262,13 @@ def format_site(site: dict) -> str:
 
 def build_prompt(task: str, site: dict, *, thread: str | None = None, rules: str | None = None,
                  ratio: str | None = None, extra: str | None = None, persona: str | None = None,
-                 length: str = "auto", memory: Path | None = DEFAULT_MEMORY) -> str:
+                 length: str = "auto", memory: Path | None = DEFAULT_MEMORY,
+                 platform: str = "reddit") -> str:
     sections = [
-        "You are using the following skill. Follow it exactly.\n\n" + read_skill(memory),
+        "You are using the following skill. Follow it exactly.\n\n" + read_skill(memory, platform),
         "\n\n===== CONTEXT =====",
-        f"\nTask: {task}",
+        f"\nPlatform: {platform}",
+        f"Task: {task}",
     ]
     if length != "auto":
         sections.append(f"Length: {length} (short = 2-4 sentences; long = full steps, see 'Length' in the skill)")
@@ -341,17 +347,19 @@ def cmd_prompt(args):
     site = get_site(config, args.site)
     thread_text = rules_text = None
     sub = args.sub
+    if args.thread and args.platform != "reddit":
+        sys.exit("--thread fetches Reddit only. For X/Threads, paste the post into a file and use --thread-file.")
     if args.thread:
         t = parse_thread(fetch_json(thread_json_url(args.thread)))
         thread_text, sub = format_thread(t), sub or t["sub"]
     elif args.thread_file:
         thread_text = Path(args.thread_file).read_text()
-    if sub and not args.no_rules:
+    if sub and args.platform == "reddit" and not args.no_rules:
         rules_text = format_rules(sub, get_rules(sub))
     ratio = format_ratio(ratio_status(read_log(args.log), site["key"], 7), site["key"])
     prompt = build_prompt(args.task, site, thread=thread_text, rules=rules_text, ratio=ratio,
                           extra=args.notes, persona=config.get("me", {}).get("about"),
-                          length=args.length, memory=args.memory)
+                          length=args.length, memory=args.memory, platform=args.platform)
     if args.send:
         print(call_ai(prompt))
     elif args.out:
@@ -408,7 +416,9 @@ def main(argv=None):
     p.add_argument("--site")
     g = p.add_mutually_exclusive_group()
     g.add_argument("--thread", help="Reddit thread URL")
-    g.add_argument("--thread-file", help="text file with a pasted thread")
+    g.add_argument("--thread-file", help="text file with a pasted thread/post (any platform), "
+                                         "or your own text to repurpose or review")
+    p.add_argument("--platform", choices=PLATFORMS, default="reddit")
     p.add_argument("--sub", help="target subreddit (for post / mod-message)")
     p.add_argument("--notes", help="extra context for the AI")
     p.add_argument("--no-rules", action="store_true", help="skip fetching subreddit rules")

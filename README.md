@@ -1,4 +1,4 @@
-# Reddit Assistant
+# Social Assistant (Reddit, X, Threads)
 
 A free, open-source kit for growing on Reddit **as yourself**: find questions you can
 answer, get human-sounding drafts from any AI, post them by hand, and keep your
@@ -6,7 +6,7 @@ self-promotion honest.
 
 It has two parts:
 
-- **`skill/reddit-assistant/`**: an AI skill (instructions and references) that works with
+- **`skill/social-assistant/`**: an AI skill (instructions and references) that works with
   Claude, ChatGPT, Gemini, a local model, or anything that reads text.
 - **`tools/redditkit.py`**: a small read-only helper that finds threads, pulls subreddit
   rules, builds the prompt for you, and tracks your helpful-to-promo ratio.
@@ -52,6 +52,30 @@ python tools/redditkit.py prompt pick-subs --site freemac --no-rules         # s
 python tools/redditkit.py prompt review --site freemac --thread-file my-draft.txt --no-rules
 ```
 
+## X and Threads
+
+The same skill drafts for X and Instagram Threads. Paste the post you want to reply to
+(or your own text to repurpose) into a file and use `--platform`:
+
+```bash
+# Turn a Reddit answer that did well into an X post, an X thread and a Threads post
+python tools/redditkit.py prompt repurpose --platform x --site freemac --thread-file my-answer.txt
+
+# A how-to thread for X, or a relatable tip for Threads
+python tools/redditkit.py prompt thread --platform x --site freemac --notes "System Data snapshots fix"
+python tools/redditkit.py prompt post --platform threads --site freemac --notes "256GB Mac full"
+
+# Reply to someone's X post (saved in post.txt)
+python tools/redditkit.py prompt reply --platform x --site freemac --thread-file post.txt
+
+python tools/redditkit.py log helpful x "snapshots tip post"
+```
+
+Platform guides: `skill/social-assistant/references/platforms/x.md` and `threads.md`.
+Key points: links go in a reply to your own post or in your bio, not the main post;
+about 4 in 5 posts should be pure tips; replies to bigger accounts grow a small account fastest.
+Schedule posts with the apps' own schedulers; nothing here posts for you.
+
 ## Comment length
 
 Drafts default to **short comments (2–4 sentences)**, which earn the most karma.
@@ -94,14 +118,14 @@ export AI_BASE_URL=https://openrouter.ai/api/v1 AI_API_KEY=... AI_MODEL=anthropi
 python tools/redditkit.py prompt reply --site freemac --thread <url> --send
 ```
 
-**As a native skill:** copy `skill/reddit-assistant/` into your agent's skills folder
+**As a native skill:** copy `skill/social-assistant/` into your agent's skills folder
 (for example `~/.claude/skills/` for Claude Code) or upload it as a Claude skill.
 In a ChatGPT custom GPT or a Gemini Gem, paste `SKILL.md` into the instructions and add the
 three `references/*.md` files as knowledge.
 
 ## What makes the drafts sound human
 
-`skill/reddit-assistant/references/voice.md` tells the AI to open on the problem, use
+`skill/social-assistant/references/voice.md` tells the AI to open on the problem, use
 real specifics, show a bit of honest feeling, vary sentence rhythm, and avoid marketing
 and AI clichés. It is also told **not to invent experiences**. Where a personal touch
 would help and you haven't given one, it leaves a `[slot]` for you. Fill those in with

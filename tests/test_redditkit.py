@@ -71,7 +71,7 @@ class PromptTests(unittest.TestCase):
         site = {"key": "freemac", "name": "Free Mac", "url": "https://free-mac.online/",
                 "facts": ["Free"], "pages": [{"title": "Guide", "url": "https://free-mac.online/g"}]}
         p = rk.build_prompt("reply", site, thread="Title: disk full", ratio="No links for now")
-        for needle in ("Hard rules", "Voice: sound like a person", "https://free-mac.online/g",
+        for needle in ("Hard rules", "Voice: sound like a person", "Social Assistant", "https://free-mac.online/g",
                        "Title: disk full", "No links for now", "Task: reply"):
             self.assertIn(needle, p)
 
@@ -79,6 +79,18 @@ class PromptTests(unittest.TestCase):
         cfg = rk.load_config(Path(__file__).resolve().parent.parent / "sites.example.toml")
         site = rk.get_site(cfg, "freemac")
         self.assertTrue(site["subreddits"] and site["keywords"])
+
+
+class PlatformTests(unittest.TestCase):
+    def test_x_prompt_includes_x_guide_only(self):
+        p = rk.build_prompt("thread", {"key": "s"}, platform="x", memory=None)
+        self.assertIn("Platform: x", p)
+        self.assertIn("===== references/platforms/x.md", p)
+        self.assertNotIn("===== references/platforms/threads.md", p)
+
+    def test_reddit_prompt_has_no_platform_guides(self):
+        p = rk.build_prompt("reply", {"key": "s"}, memory=None)
+        self.assertNotIn("===== references/platforms/", p)
 
 
 class MemoryTests(unittest.TestCase):

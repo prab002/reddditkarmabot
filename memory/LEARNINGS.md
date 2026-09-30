@@ -11,6 +11,7 @@ of each section. Commit and push after each session so the next session picks it
 - 2026-09-30: Current goal is earning comment karma, so default to short comments (2–4 sentences). Extend only when the question needs steps.
 - 2026-09-30: Most comments should have no link. Traffic comes from the Reddit bio and the custom feed "Mac Help & Storage Fixes" shown on the profile.
 - 2026-09-30: When free-mac.online is linked, use the casual origin-story disclosure, not "full disclosure". Never present it as found on Google.
+- 2026-09-30: Also targeting X and Instagram Threads for traffic to the sites. Repurpose Reddit answers that did well into X/Threads posts; links go in a self-reply or bio.
 
 ## Subreddits
 

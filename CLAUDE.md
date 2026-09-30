@@ -1,17 +1,17 @@
-# Reddit Assistant repo
+# Social Assistant repo
 
-A human-in-the-loop kit for growing on Reddit as yourself. The AI drafts, the user posts by hand.
+A human-in-the-loop kit for growing on Reddit, X and Threads as yourself. The AI drafts, the user posts by hand.
 
 ## Start of every session
 
 1. Read `memory/LEARNINGS.md`. It holds the user's preferences and what has worked so far,
    and it overrides the skill's defaults.
-2. For any Reddit drafting, follow `skill/reddit-assistant/SKILL.md` and its `references/`.
+2. For any Reddit, X or Threads drafting, follow `skill/social-assistant/SKILL.md` and its `references/`.
 
 ## During the session
 
 - When the user pastes a thread or screenshot, draft with the skill (short comment by default).
-- Never post, vote or message on Reddit for the user, and never present their own site as
+- Never post, vote or message on any platform for the user, and never present their own site as
   something they found. See the hard rules in `SKILL.md`.
 
 ## End of session (or when something new is learned)
