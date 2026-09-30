@@ -1,0 +1,4 @@
+sites.toml
+data/
+__pycache__/
+*.pyc

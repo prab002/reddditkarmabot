@@ -1,0 +1,35 @@
+# Copy to sites.toml and fill in. One [site.<key>] block per site.
+# Only write things that are true: the AI is told it may use my_story and facts as-is.
+
+[me]
+about = """
+Indie developer. I build free Mac utilities and write guides on macOS storage and cleanup.
+"""
+
+[site.freemac]
+name = "Free Mac"
+url = "https://free-mac.online/"
+what = "Free Mac utilities plus step-by-step guides for freeing up disk space and fixing common macOS problems."
+audience = "Mac users with full disks, huge 'System Data', or a slow Mac who don't want to pay for a cleaner app."
+my_story = """
+[Replace with the real reason you built it, e.g. what happened on your own Mac.]
+"""
+facts = [
+  "Free, no account needed",
+  "[Add real facts: supported macOS versions, what the app does and doesn't touch, etc.]",
+]
+subreddits = ["mac", "MacOS", "applehelp", "macapps"]
+keywords = ["System Data", "disk full", "storage full", "free up space", "Mac slow", "other storage"]
+
+# Specific pages you might link when they are the best answer to a question.
+[[site.freemac.pages]]
+title = "What is System Data on Mac and how to reduce it"
+url = "https://free-mac.online/"   # replace with the real guide URL
+
+# [site.another]
+# name = "..."
+# url = "https://..."
+# what = "..."
+# audience = "..."
+# subreddits = ["..."]
+# keywords = ["..."]
