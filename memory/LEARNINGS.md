@@ -16,6 +16,7 @@ of each section. Commit and push after each session so the next session picks it
 
 - 2026-09-30: Targets: r/mac, r/MacOS, r/applehelp, r/MacSoftware, r/macapps (dev posts need mod approval), r/macbookair, r/macbookpro, r/MacOSBeta.
 - 2026-09-30: r/macbookair gets lots of "256GB is full" posts from new M-series owners. Good karma threads.
+- 2026-09-30: r/MacOS: sudden overnight storage drops are usually Time Machine local snapshots or a staged macOS update; for Adobe users also check Media Cache (~/Library/Application Support/Adobe/Common)
 
 ## What worked
 
