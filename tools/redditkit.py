@@ -25,6 +25,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SKILL_DIR = ROOT / "skill" / "reddit-assistant"
 DEFAULT_CONFIG = ROOT / "sites.toml"
 DEFAULT_LOG = ROOT / "data" / "activity.jsonl"
+DEFAULT_MEMORY = ROOT / "memory" / "LEARNINGS.md"
+MEMORY_SECTIONS = {"pref": "Preferences", "sub": "Subreddits", "worked": "What worked",
+                   "didnt": "What didn't", "env": "Environment"}
 USER_AGENT = "redditkit/0.1 (read-only helper; personal use)"
 TASKS = ("reply", "post", "mod-message", "pick-subs", "review")
 PROMO_RATIO = 9  # helpful actions per promotional one
@@ -208,12 +211,32 @@ def format_ratio(r: dict, site: str | None) -> str:
 
 # ---------------------------------------------------------------- prompt ---
 
-def read_skill() -> str:
+def read_skill(memory: Path | None = DEFAULT_MEMORY) -> str:
     parts = [(SKILL_DIR / "SKILL.md").read_text()]
     for name in ("voice.md", "playbook.md", "templates.md"):
         p = SKILL_DIR / "references" / name
         parts.append(f"\n\n===== references/{name} =====\n\n{p.read_text()}")
+    if memory and memory.exists():
+        parts.append(f"\n\n===== memory/LEARNINGS.md =====\n\n{memory.read_text()}")
     return "".join(parts)
+
+
+def add_learning(path: Path, section: str, text: str, today: dt.date | None = None) -> None:
+    """Append a dated bullet at the end of a '## <section>' block, creating it if needed."""
+    heading = f"## {MEMORY_SECTIONS[section]}"
+    bullet = f"- {(today or dt.date.today()).isoformat()}: {text.strip()}"
+    lines = path.read_text().splitlines() if path.exists() else ["# Learnings", ""]
+    if heading not in lines:
+        lines += ["", heading, "", bullet]
+    else:
+        start = lines.index(heading) + 1
+        end = next((i for i in range(start, len(lines)) if lines[i].startswith("## ")), len(lines))
+        insert_at = end
+        while insert_at > start + 1 and not lines[insert_at - 1].strip():
+            insert_at -= 1
+        lines.insert(insert_at, bullet)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n")
 
 
 def format_site(site: dict) -> str:
@@ -234,12 +257,15 @@ def format_site(site: dict) -> str:
 
 
 def build_prompt(task: str, site: dict, *, thread: str | None = None, rules: str | None = None,
-                 ratio: str | None = None, extra: str | None = None, persona: str | None = None) -> str:
+                 ratio: str | None = None, extra: str | None = None, persona: str | None = None,
+                 length: str = "auto", memory: Path | None = DEFAULT_MEMORY) -> str:
     sections = [
-        "You are using the following skill. Follow it exactly.\n\n" + read_skill(),
+        "You are using the following skill. Follow it exactly.\n\n" + read_skill(memory),
         "\n\n===== CONTEXT =====",
         f"\nTask: {task}",
     ]
+    if length != "auto":
+        sections.append(f"Length: {length} (short = 2-4 sentences; long = full steps, see 'Length' in the skill)")
     if persona:
         sections.append(f"\nAbout me (the person posting):\n{persona}")
     sections.append(f"\nMy site:\n{format_site(site)}")
@@ -324,7 +350,8 @@ def cmd_prompt(args):
         rules_text = format_rules(sub, get_rules(sub))
     ratio = format_ratio(ratio_status(read_log(args.log), site["key"], 7), site["key"])
     prompt = build_prompt(args.task, site, thread=thread_text, rules=rules_text, ratio=ratio,
-                          extra=args.notes, persona=config.get("me", {}).get("about"))
+                          extra=args.notes, persona=config.get("me", {}).get("about"),
+                          length=args.length, memory=args.memory)
     if args.send:
         print(call_ai(prompt))
     elif args.out:
@@ -346,6 +373,12 @@ def cmd_log(args):
     print(format_ratio(ratio_status(read_log(args.log), args.site, 7), args.site))
 
 
+def cmd_learn(args):
+    add_learning(args.memory, args.section, args.text)
+    print(f"Added to {MEMORY_SECTIONS[args.section]} in {args.memory}.")
+    print("Commit and push it so the next session picks it up.")
+
+
 def cmd_ratio(args):
     print(format_ratio(ratio_status(read_log(args.log), args.site, args.days), args.site))
 
@@ -355,6 +388,7 @@ def main(argv=None):
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     ap.add_argument("--log", type=Path, default=DEFAULT_LOG)
+    ap.add_argument("--memory", type=Path, default=DEFAULT_MEMORY)
     sp = ap.add_subparsers(dest="cmd", required=True)
 
     p = sp.add_parser("rules", help="show a subreddit's rules")
@@ -378,6 +412,8 @@ def main(argv=None):
     p.add_argument("--sub", help="target subreddit (for post / mod-message)")
     p.add_argument("--notes", help="extra context for the AI")
     p.add_argument("--no-rules", action="store_true", help="skip fetching subreddit rules")
+    p.add_argument("--length", choices=("auto", "short", "long"), default="auto",
+                   help="short = 2-4 sentences (default for karma); auto lets the skill decide")
     p.add_argument("--out", help="write the prompt to a file instead of stdout")
     p.add_argument("--send", action="store_true",
                    help="send to an OpenAI-compatible API (AI_BASE_URL, AI_MODEL, AI_API_KEY)")
@@ -389,6 +425,12 @@ def main(argv=None):
     p.add_argument("note", nargs="?", default="")
     p.add_argument("--site")
     p.set_defaults(func=cmd_log)
+
+    p = sp.add_parser("learn", help="save a learning to memory/LEARNINGS.md")
+    p.add_argument("text")
+    p.add_argument("--section", choices=tuple(MEMORY_SECTIONS), default="worked",
+                   help="pref, sub, worked (default), didnt, env")
+    p.set_defaults(func=cmd_learn)
 
     p = sp.add_parser("ratio", help="show your helpful vs. promo balance")
     p.add_argument("--site")

@@ -81,5 +81,27 @@ class PromptTests(unittest.TestCase):
         self.assertTrue(site["subreddits"] and site["keywords"])
 
 
+class MemoryTests(unittest.TestCase):
+    def test_add_learning_goes_into_right_section(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "LEARNINGS.md"
+            path.write_text("# Learnings\n\n## What worked\n\n- old\n\n## What didn't\n\n- x\n")
+            rk.add_learning(path, "worked", "short reply +30", dt.date(2026, 10, 1))
+            rk.add_learning(path, "env", "new section", dt.date(2026, 10, 1))
+            text = path.read_text()
+            self.assertIn("- old\n- 2026-10-01: short reply +30\n\n## What didn't", text)
+            self.assertTrue(text.rstrip().endswith("## Environment\n\n- 2026-10-01: new section"))
+
+    def test_prompt_includes_memory_and_length(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            mem = Path(d) / "LEARNINGS.md"
+            mem.write_text("# Learnings\n- prefers short\n")
+            p = rk.build_prompt("reply", {"key": "s"}, length="short", memory=mem)
+            self.assertIn("prefers short", p)
+            self.assertIn("Length: short", p)
+
+
 if __name__ == "__main__":
     unittest.main()

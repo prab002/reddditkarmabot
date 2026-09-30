@@ -22,8 +22,8 @@ who has been through the problem.
   Hedging on the right details makes the confident parts believable.
 - **Match the subreddit.** r/mac is casual and a bit jokey. r/MacOS is more
   technical. r/SideProject is supportive of makers. Mirror the top comments' length and tone.
-- **Keep it short when the question is short.** Two to five sentences answers most threads.
-  Long step-by-steps only when the question really needs them.
+- **Keep it short.** Two to four sentences is the default and answers most threads.
+  Add lines only when the question really needs steps or commands (see "Length" in `SKILL.md`).
 - **End naturally.** A follow-up question ("which macOS are you on?"), a caveat, or just stop.
 
 ## Don't

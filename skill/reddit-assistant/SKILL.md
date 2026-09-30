@@ -19,6 +19,23 @@ Read these before drafting:
 - `references/voice.md` covers how to sound like a person and not a press release. **Always apply it.**
 - `references/playbook.md` covers subreddit choice, self-promotion ratios, the daily routine and the first week.
 - `references/templates.md` holds starting shapes for replies, launch posts and mod messages.
+- `memory/LEARNINGS.md` (repo root, if present) holds what the user has learned works for
+  them: preferences, subreddit quirks, what got upvoted or removed. **It overrides the
+  defaults here**, except the hard rules.
+
+## Length: short by default
+
+The user is building karma by commenting, so replies default to **2–4 sentences**:
+lead with reassurance or the direct answer, add the one or two most useful tips, stop.
+
+Go longer (numbered steps, commands, 6–12 lines) only when the question needs it:
+- the person asks *how* to do something step by step
+- a fix needs exact commands or settings paths to be safe
+- the thread has no good answer yet and a full one would become the top comment
+- the user asks for "detailed", "full" or "long"
+
+When you go long, still put the answer in the first two lines. For a longer draft,
+add a 2-sentence short version underneath so the user can pick.
 
 ## Inputs you may get
 

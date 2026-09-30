@@ -52,6 +52,31 @@ python tools/redditkit.py prompt pick-subs --site freemac --no-rules         # s
 python tools/redditkit.py prompt review --site freemac --thread-file my-draft.txt --no-rules
 ```
 
+## Comment length
+
+Drafts default to **short comments (2–4 sentences)**, which earn the most karma.
+They get longer only when the question needs steps or commands. Force it either way:
+
+```bash
+python tools/redditkit.py prompt reply --site freemac --thread <url> --length short
+python tools/redditkit.py prompt reply --site freemac --thread <url> --length long
+```
+
+## Memory: getting smarter each session
+
+`memory/LEARNINGS.md` records what works for you: your preferences, subreddit quirks,
+which comments got karma, and what got removed. Every `prompt` includes it, and
+`CLAUDE.md` tells Claude Code to read it at the start of each session and update it at the end.
+
+```bash
+python tools/redditkit.py learn "r/macbookair short storage reply got +40" --section worked
+python tools/redditkit.py learn "r/MacOS removes posts without flair" --section sub
+python tools/redditkit.py learn "prefer no emojis" --section pref
+git add memory && git commit -m "Update learnings" && git push
+```
+
+Sections: `pref`, `sub`, `worked` (default), `didnt`, `env`.
+
 ## Plugging in an AI
 
 **Copy and paste (works with any AI):** run `prompt ...` and paste the output into any chat.
