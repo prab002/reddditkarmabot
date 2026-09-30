@@ -61,7 +61,7 @@ The user (or `redditkit.py prompt`) usually gives you some of these:
 - **Subreddit rules**: from `redditkit.py rules <sub>`
 - **Ratio status**: helpful vs. promotional actions this week, from `redditkit.py ratio`
 - **Platform**: `reddit` (default), `x` or `threads`
-- **Task**: `reply`, `post`, `thread`, `repurpose`, `mod-message`, `pick-subs` or `review`
+- **Task**: `reply`, `batch-reply`, `post`, `thread`, `repurpose`, `week`, `mod-message`, `pick-subs` or `review`
 
 If the task isn't given, work it out from what they pasted. If something that
 matters is missing, like the subreddit's rules before a promo post, ask for it
@@ -129,6 +129,35 @@ per part, and the recap plus link last (disclosed as the user's).
 For `repurpose`, take something the user already wrote (a Reddit answer that did well,
 a guide on their site) and turn it into one X post, one X thread and one Threads post,
 each rewritten for its platform, plus which to post first and when to post the rest across the week.
+
+For `batch-reply`, the user pastes several posts or threads separated by `---`. Draft one
+short reply per post, numbered to match, each following the platform's reply rules (help first,
+no link unless they asked for a tool). Skip any post where a reply wouldn't add anything
+and say why in one line. This is the user's main daily activity, so keep each reply quick to
+read, specific, and different in shape from the others (not every reply opens the same way).
+
+For `week`, plan the user's own posts for the next 7 days: **3 posts per platform unless the
+memory file says otherwise**, since most of their effort goes into comments. Mix:
+- 2 pure-value posts (a tip, a fix, a myth busted), at least one with an image idea in [brackets]
+- 1 community post that invites replies, e.g. "Drop a screenshot of your Mac's storage bar and
+  I'll tell you what's eating it", a poll, or a "what's the worst thing you've found in System
+  Data?" question. The user answers every reply; this builds the community.
+- A link to the user's site in at most 1 of them, always in a later part, never the first.
+
+Output the week as a queue file the user saves and checks with `redditkit.py check`:
+
+```
+### 2026-10-06 09:00 | x | draft
+<post>
+---
+<optional self-reply, e.g. the link>
+
+### 2026-10-06 19:00 | threads | draft
+<post>
+```
+Use the platform's best posting times from its guide, local time, one header per post.
+After the queue, add a short **Daily comment plan**: which kinds of accounts or subreddits to
+comment on each day and one example opener, so the user knows where to spend their time.
 
 For `review`, when the user pastes a draft of their own, point out what sounds
 like marketing or like AI, anything that breaks a rule, and missing disclosure,

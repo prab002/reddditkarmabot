@@ -6,6 +6,12 @@ about = """
 Indie developer. I build free Mac utilities and write guides on macOS storage and cleanup.
 """
 
+# Your rhythm: a few of your own posts, lots of comments.
+[schedule]
+posts_per_week = 3        # own posts per platform per week (check warns above this)
+max_per_day = 2           # own posts per platform per day (check blocks above this)
+comments_per_day = { reddit = 5, x = 10, threads = 5 }   # targets shown by `today`
+
 [site.freemac]
 name = "Free Mac"
 url = "https://free-mac.online/"

@@ -23,5 +23,6 @@ A human-in-the-loop kit for growing on Reddit, X and Threads as yourself. The AI
 
 ## Code
 
-- `tools/redditkit.py`: stdlib-only CLI. `threads`, `rules`, `prompt`, `log`, `ratio`, `learn`.
+- `tools/redditkit.py`: stdlib-only CLI. `threads`, `rules`, `prompt`, `log`, `ratio`, `today`, `check`, `learn`.
+- `tools/postqueue.py`: parses and checks weekly queue files. Nothing in this repo posts to any platform.
 - Tests: `python -m unittest discover -s tests`

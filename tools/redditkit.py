@@ -21,6 +21,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+import postqueue as pq
+
 ROOT = Path(__file__).resolve().parent.parent
 SKILL_DIR = ROOT / "skill" / "social-assistant"
 DEFAULT_CONFIG = ROOT / "sites.toml"
@@ -29,7 +31,7 @@ DEFAULT_MEMORY = ROOT / "memory" / "LEARNINGS.md"
 MEMORY_SECTIONS = {"pref": "Preferences", "sub": "Subreddits", "worked": "What worked",
                    "didnt": "What didn't", "env": "Environment"}
 USER_AGENT = "redditkit/0.1 (read-only helper; personal use)"
-TASKS = ("reply", "post", "thread", "repurpose", "mod-message", "pick-subs", "review")
+TASKS = ("reply", "batch-reply", "post", "thread", "repurpose", "week", "mod-message", "pick-subs", "review")
 PLATFORMS = ("reddit", "x", "threads")
 PROMO_RATIO = 9  # helpful actions per promotional one
 
@@ -381,6 +383,69 @@ def cmd_log(args):
     print(format_ratio(ratio_status(read_log(args.log), args.site, 7), args.site))
 
 
+def _site_urls(config: dict) -> list[str]:
+    urls = []
+    for site in config.get("site", {}).values():
+        urls.append(site.get("url", ""))
+        urls += [p.get("url", "") for p in site.get("pages", [])]
+    return urls
+
+
+def schedule_settings(config: dict) -> dict:
+    s = config.get("schedule", {})
+    return {
+        "posts_per_week": s.get("posts_per_week", pq.DEFAULT_POSTS_PER_WEEK),
+        "max_per_day": s.get("max_per_day", pq.DEFAULT_MAX_PER_DAY),
+        "comments_per_day": {"reddit": 5, "x": 10, "threads": 5, **s.get("comments_per_day", {})},
+    }
+
+
+def cmd_check(args):
+    config = load_config(args.config)
+    sched = schedule_settings(config)
+    try:
+        entries = pq.parse_queue(Path(args.file).read_text())
+    except ValueError as e:
+        sys.exit(f"{args.file}: {e}")
+    errors, warnings = pq.check_queue(entries, _site_urls(config), max_per_day=sched["max_per_day"],
+                                      posts_per_week=sched["posts_per_week"])
+    counts = {s: sum(e.status == s for e in entries) for s in ("draft", "approved", "posted", "skip")}
+    print(f"{len(entries)} posts: " + ", ".join(f"{v} {k}" for k, v in counts.items() if v))
+    for w in warnings:
+        print(f"warning: {w}")
+    for e in errors:
+        print(f"ERROR: {e}")
+    if errors:
+        sys.exit(1)
+    print("OK. Copy the approved posts into X's / Threads' own scheduler, then mark them 'posted'.")
+
+
+def today_status(entries: list[dict], targets: dict, now: dt.datetime | None = None) -> dict:
+    now = now or dt.datetime.now(dt.timezone.utc)
+    done = {p: 0 for p in targets}
+    for e in entries:
+        t = dt.datetime.fromisoformat(e["time"])
+        if t.astimezone(now.tzinfo).date() != now.date():
+            continue
+        platform = e["sub"] if e["sub"] in ("x", "threads") else "reddit"
+        if platform in done:
+            done[platform] += 1
+    return {p: (done[p], targets[p]) for p in targets}
+
+
+def cmd_today(args):
+    sched = schedule_settings(load_config(args.config))
+    status = today_status(read_log(args.log), sched["comments_per_day"],
+                          dt.datetime.now().astimezone())
+    print("Comments today:")
+    for platform, (done, target) in status.items():
+        bar = "#" * min(done, target) + "." * max(target - done, 0)
+        print(f"  {platform:<8} {done:>2}/{target:<2} {bar}")
+    left = sum(max(t - d, 0) for d, t in status.values())
+    print("Done for today. Nice." if left == 0 else f"{left} to go. Paste posts into a file and run: "
+          "redditkit.py prompt batch-reply --platform <x|threads|reddit> --thread-file posts.txt")
+
+
 def cmd_learn(args):
     add_learning(args.memory, args.section, args.text)
     print(f"Added to {MEMORY_SECTIONS[args.section]} in {args.memory}.")
@@ -435,6 +500,13 @@ def main(argv=None):
     p.add_argument("note", nargs="?", default="")
     p.add_argument("--site")
     p.set_defaults(func=cmd_log)
+
+    p = sp.add_parser("check", help="validate a weekly post queue file (made with the 'week' task)")
+    p.add_argument("file")
+    p.set_defaults(func=cmd_check)
+
+    p = sp.add_parser("today", help="show today's comment count vs. your daily targets")
+    p.set_defaults(func=cmd_today)
 
     p = sp.add_parser("learn", help="save a learning to memory/LEARNINGS.md")
     p.add_argument("text")

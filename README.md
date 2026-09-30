@@ -76,6 +76,34 @@ Key points: links go in a reply to your own post or in your bio, not the main po
 about 4 in 5 posts should be pure tips; replies to bigger accounts grow a small account fastest.
 Schedule posts with the apps' own schedulers; nothing here posts for you.
 
+## Your weekly rhythm: 3 posts, lots of comments
+
+Growth on a new account comes mostly from **comments**. Your own posts are 3 a week per platform.
+
+**Daily (15–20 min): comments**
+```bash
+python tools/redditkit.py today          # progress vs. targets (Reddit 5, X 10, Threads 5)
+# paste 5-10 posts you want to reply to into posts.txt, separated by lines of ---
+python tools/redditkit.py prompt batch-reply --platform x --site freemac --thread-file posts.txt
+# post the replies you like by hand, then log each one
+python tools/redditkit.py log helpful x "reply to @someone about snapshots"
+```
+
+**Weekly (10 min): plan your 3 posts**
+```bash
+python tools/redditkit.py prompt week --platform x --site freemac --no-rules --out week-prompt.txt
+# paste into any AI, save its answer as queue/2026-w41.md
+python tools/redditkit.py check queue/2026-w41.md
+```
+`check` enforces character limits (X counts links as 23), at most one post per platform
+per week linking your sites, no links in the main post, no duplicate text across
+platforms, and your daily and weekly limits (`[schedule]` in `sites.toml`). Change `draft` to
+`approved` on the posts you like, paste them into X's or Threads' own scheduler, and mark
+them `posted`.
+
+Each week includes a **community post** ("drop a screenshot of your storage bar and I'll tell
+you what's eating it"). Answer every reply to it; that's how followers turn into a community.
+
 ## Comment length
 
 Drafts default to **short comments (2–4 sentences)**, which earn the most karma.

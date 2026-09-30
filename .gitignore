@@ -2,3 +2,4 @@ sites.toml
 data/
 __pycache__/
 *.pyc
+queue/
