@@ -12,6 +12,7 @@ of each section. Commit and push after each session so the next session picks it
 - 2026-09-30: Most comments should have no link. Traffic comes from the Reddit bio and the custom feed "Mac Help & Storage Fixes" shown on the profile.
 - 2026-09-30: When free-mac.online is linked, use the casual origin-story disclosure, not "full disclosure". Never present it as found on Google.
 - 2026-09-30: Also targeting X and Instagram Threads for traffic to the sites. Repurpose Reddit answers that did well into X/Threads posts; links go in a self-reply or bio.
+- 2026-09-30: X account is brand new and on the free tier: growth plan is replies to mid-size accounts + X Communities, links only in bio/self-reply
 
 ## Subreddits
 
